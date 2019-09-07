@@ -54,7 +54,7 @@ class ImGuiDrawer : public WindowListener {
   static ImGuiDrawer* current_drawer_;
 
   Window* window_ = nullptr;
-  GraphicsContext* graphics_context_ = nullptr;
+  std::weak_ptr<GraphicsContext> graphics_context_;
 
   std::vector<uint8_t> internal_state_;
   std::unique_ptr<ImFontAtlas> font_atlas_;

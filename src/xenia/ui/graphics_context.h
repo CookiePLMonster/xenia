@@ -64,21 +64,24 @@ class GraphicsContext {
 };
 
 struct GraphicsContextLock {
-  explicit GraphicsContextLock(GraphicsContext* context) : context_(context) {
-    was_current_ = context_->is_current();
-    if (!was_current_) {
-      context_->MakeCurrent();
+  explicit GraphicsContextLock(std::shared_ptr<GraphicsContext> context)
+      : context_(std::move(context)) {
+    if (context_) {
+      was_current_ = context_->is_current();
+      if (!was_current_) {
+        context_->MakeCurrent();
+      }
     }
   }
   ~GraphicsContextLock() {
-    if (!was_current_) {
+    if (!was_current_ && context_) {
       context_->ClearCurrent();
     }
   }
 
  private:
   bool was_current_ = false;
-  GraphicsContext* context_ = nullptr;
+  std::shared_ptr<GraphicsContext> context_;
 };
 
 }  // namespace ui

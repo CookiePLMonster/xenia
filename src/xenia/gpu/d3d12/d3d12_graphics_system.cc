@@ -53,8 +53,8 @@ X_STATUS D3D12GraphicsSystem::Setup(cpu::Processor* processor,
   }
 
   if (target_window) {
-    display_context_ = reinterpret_cast<xe::ui::d3d12::D3D12Context*>(
-        target_window->context());
+    display_context_ = std::static_pointer_cast<xe::ui::d3d12::D3D12Context>(
+        target_window->context().lock());
   }
 
   // Create the stretch pipeline root signature, with 1 parameter (source
@@ -191,8 +191,9 @@ void D3D12GraphicsSystem::Shutdown() {
 }
 
 void D3D12GraphicsSystem::AwaitFrontBufferUnused() {
-  if (display_context_ != nullptr) {
-    display_context_->AwaitAllFramesCompletion();
+  auto context = display_context_.lock();
+  if (context) {
+    context->AwaitAllFramesCompletion();
   }
 }
 
@@ -240,7 +241,12 @@ D3D12GraphicsSystem::CreateCommandProcessor() {
 }
 
 void D3D12GraphicsSystem::Swap(xe::ui::UIEvent* e) {
-  if (display_context_->WasLost()) {
+  auto context = display_context_.lock();
+  if (!context) {
+    return;
+  }
+
+  if (context->WasLost()) {
     // We're crashing. Cheese it.
     return;
   }
@@ -262,9 +268,9 @@ void D3D12GraphicsSystem::Swap(xe::ui::UIEvent* e) {
     return;
   }
 
-  auto command_list = display_context_->GetSwapCommandList();
+  auto command_list = context->GetSwapCommandList();
   uint32_t swap_width, swap_height;
-  display_context_->GetSwapChainSize(swap_width, swap_height);
+  context->GetSwapChainSize(swap_width, swap_height);
   D3D12_VIEWPORT viewport;
   viewport.TopLeftX = 0.0f;
   viewport.TopLeftY = 0.0f;

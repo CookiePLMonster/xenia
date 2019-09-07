@@ -47,8 +47,8 @@ X_STATUS VulkanGraphicsSystem::Setup(cpu::Processor* processor,
   }
 
   if (target_window) {
-    display_context_ = reinterpret_cast<xe::ui::vulkan::VulkanContext*>(
-        target_window->context());
+    display_context_ = std::static_pointer_cast<xe::ui::vulkan::VulkanContext>(
+        target_window->context().lock());
   }
 
   // Create our own command pool we can use for captures.
@@ -264,9 +264,14 @@ void VulkanGraphicsSystem::Swap(xe::ui::UIEvent* e) {
     return;
   }
 
+  auto context = display_context_.lock();
+  if (!context) {
+    return;
+  }
+
   // Check for pending swap.
   auto& swap_state = command_processor_->swap_state();
-  if (display_context_->WasLost()) {
+  if (context->WasLost()) {
     // We're crashing. Cheese it.
     swap_state.pending = false;
     return;
@@ -286,7 +291,7 @@ void VulkanGraphicsSystem::Swap(xe::ui::UIEvent* e) {
     return;
   }
 
-  auto swap_chain = display_context_->swap_chain();
+  auto swap_chain = context->swap_chain();
   auto copy_cmd_buffer = swap_chain->copy_cmd_buffer();
   auto front_buffer =
       reinterpret_cast<VkImage>(swap_state.front_buffer_texture);

@@ -42,7 +42,7 @@ class VulkanProvider : public GraphicsProvider {
 
   static std::unique_ptr<VulkanProvider> Create(Window* main_window);
 
-  std::unique_ptr<GraphicsContext> CreateContext(
+  std::shared_ptr<GraphicsContext> CreateContext(
       Window* target_window) override;
   std::unique_ptr<GraphicsContext> CreateOffscreenContext() override;
 

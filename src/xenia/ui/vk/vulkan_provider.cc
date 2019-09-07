@@ -282,14 +282,14 @@ bool VulkanProvider::Initialize() {
   return true;
 }
 
-std::unique_ptr<GraphicsContext> VulkanProvider::CreateContext(
+std::shared_ptr<GraphicsContext> VulkanProvider::CreateContext(
     Window* target_window) {
   auto new_context =
-      std::unique_ptr<VulkanContext>(new VulkanContext(this, target_window));
+      std::shared_ptr<VulkanContext>(new VulkanContext(this, target_window));
   if (!new_context->Initialize()) {
     return nullptr;
   }
-  return std::unique_ptr<GraphicsContext>(new_context.release());
+  return new_context;
 }
 
 std::unique_ptr<GraphicsContext> VulkanProvider::CreateOffscreenContext() {

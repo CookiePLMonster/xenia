@@ -54,7 +54,7 @@ X_STATUS GraphicsSystem::Setup(cpu::Processor* processor,
     if (target_window_) {
       target_window_->loop()->PostSynchronous([&]() {
         // Create the context used for presentation.
-        assert_null(target_window->context());
+        assert_true(target_window->context().expired());
         target_window_->set_context(provider_->CreateContext(target_window_));
 
         // Setup the context the command processor will do all its drawing in.

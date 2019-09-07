@@ -268,14 +268,14 @@ bool D3D12Provider::Initialize() {
   return true;
 }
 
-std::unique_ptr<GraphicsContext> D3D12Provider::CreateContext(
+std::shared_ptr<GraphicsContext> D3D12Provider::CreateContext(
     Window* target_window) {
   auto new_context =
-      std::unique_ptr<D3D12Context>(new D3D12Context(this, target_window));
+      std::shared_ptr<D3D12Context>(new D3D12Context(this, target_window));
   if (!new_context->Initialize()) {
     return nullptr;
   }
-  return std::unique_ptr<GraphicsContext>(new_context.release());
+  return new_context;
 }
 
 std::unique_ptr<GraphicsContext> D3D12Provider::CreateOffscreenContext() {

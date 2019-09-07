@@ -169,7 +169,7 @@ void ImGuiDrawer::SetupFont() {
   int width, height;
   io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
 
-  font_texture_ = graphics_context_->immediate_drawer()->CreateTexture(
+  font_texture_ = graphics_context_.lock()->immediate_drawer()->CreateTexture(
       width, height, ImmediateTextureFilter::kLinear, true,
       reinterpret_cast<uint8_t*>(pixels));
 
@@ -177,7 +177,11 @@ void ImGuiDrawer::SetupFont() {
 }
 
 void ImGuiDrawer::RenderDrawLists(ImDrawData* data) {
-  auto drawer = graphics_context_->immediate_drawer();
+  auto context = graphics_context_.lock();
+  if (!context) {
+    return;
+  }
+  auto drawer = context->immediate_drawer();
 
   // Handle cases of screen coordinates != from framebuffer coordinates (e.g.
   // retina displays).

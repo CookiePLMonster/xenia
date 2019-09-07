@@ -47,7 +47,7 @@ class MicroprofileDrawer {
   void Flush();
 
   Window* window_ = nullptr;
-  GraphicsContext* graphics_context_ = nullptr;
+  std::weak_ptr<GraphicsContext> graphics_context_;
 
   std::vector<ImmediateVertex> vertices_;
   int vertex_count_ = 0;

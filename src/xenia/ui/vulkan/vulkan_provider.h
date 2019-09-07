@@ -30,7 +30,7 @@ class VulkanProvider : public GraphicsProvider {
   VulkanInstance* instance() const { return instance_.get(); }
   VulkanDevice* device() const { return device_.get(); }
 
-  std::unique_ptr<GraphicsContext> CreateContext(
+  std::shared_ptr<GraphicsContext> CreateContext(
       Window* target_window) override;
   std::unique_ptr<GraphicsContext> CreateOffscreenContext() override;
 

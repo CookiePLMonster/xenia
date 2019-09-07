@@ -89,7 +89,7 @@ class Window {
     height_ = bottom - top;
   }
 
-  GraphicsContext* context() const { return context_.get(); }
+  std::weak_ptr<GraphicsContext> context() const { return context_; }
   ImGuiDrawer* imgui_drawer() const { return imgui_drawer_.get(); }
   bool is_imgui_input_enabled() const { return is_imgui_input_enabled_; }
   void set_imgui_input_enabled(bool value);
@@ -98,7 +98,7 @@ class Window {
   void DetachListener(WindowListener* listener);
 
   virtual bool Initialize() { return true; }
-  void set_context(std::unique_ptr<GraphicsContext> context) {
+  void set_context(std::shared_ptr<GraphicsContext> context) {
     context_ = std::move(context);
     if (context_) {
       MakeReady();
@@ -175,7 +175,7 @@ class Window {
   bool is_cursor_visible_ = true;
   bool is_imgui_input_enabled_ = false;
 
-  std::unique_ptr<GraphicsContext> context_;
+  std::shared_ptr<GraphicsContext> context_;
   std::unique_ptr<ImGuiDrawer> imgui_drawer_;
 
   uint32_t frame_count_ = 0;

@@ -42,7 +42,7 @@ class VulkanGraphicsSystem : public GraphicsSystem {
   void Swap(xe::ui::UIEvent* e) override;
 
   xe::ui::vulkan::VulkanDevice* device_ = nullptr;
-  xe::ui::vulkan::VulkanContext* display_context_ = nullptr;
+  std::weak_ptr<xe::ui::vulkan::VulkanContext> display_context_;
 
   VkCommandPool command_pool_ = nullptr;
 

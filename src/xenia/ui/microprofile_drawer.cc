@@ -170,7 +170,7 @@ void MicroprofileDrawer::SetupFont() {
     }
   }
 
-  font_texture_ = graphics_context_->immediate_drawer()->CreateTexture(
+  font_texture_ = graphics_context_.lock()->immediate_drawer()->CreateTexture(
       kFontTextureWidth, kFontTextureHeight, ImmediateTextureFilter::kNearest,
       false, reinterpret_cast<uint8_t*>(unpacked));
 }
@@ -178,13 +178,13 @@ void MicroprofileDrawer::SetupFont() {
 MicroprofileDrawer::~MicroprofileDrawer() = default;
 
 void MicroprofileDrawer::Begin() {
-  graphics_context_->immediate_drawer()->Begin(window_->scaled_width(),
-                                               window_->scaled_height());
+  graphics_context_.lock()->immediate_drawer()->Begin(window_->scaled_width(),
+                                                      window_->scaled_height());
 }
 
 void MicroprofileDrawer::End() {
   Flush();
-  graphics_context_->immediate_drawer()->End();
+  graphics_context_.lock()->immediate_drawer()->End();
 }
 
 ImmediateVertex* MicroprofileDrawer::BeginVertices(
@@ -202,7 +202,12 @@ ImmediateVertex* MicroprofileDrawer::BeginVertices(
 void MicroprofileDrawer::EndVertices() {}
 
 void MicroprofileDrawer::Flush() {
-  auto drawer = graphics_context_->immediate_drawer();
+  auto context = graphics_context_.lock();
+  if (!context) {
+    return;
+  }
+
+  auto drawer = context->immediate_drawer();
   if (!vertex_count_) {
     return;
   }

@@ -56,7 +56,7 @@ class D3D12GraphicsSystem : public GraphicsSystem {
   void Swap(xe::ui::UIEvent* e) override;
 
  private:
-  ui::d3d12::D3D12Context* display_context_ = nullptr;
+  std::weak_ptr<ui::d3d12::D3D12Context> display_context_;
 
   ID3D12RootSignature* stretch_root_signature_ = nullptr;
   ID3D12RootSignature* stretch_gamma_root_signature_ = nullptr;

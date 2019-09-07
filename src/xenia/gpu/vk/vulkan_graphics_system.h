@@ -39,7 +39,7 @@ class VulkanGraphicsSystem : public GraphicsSystem {
   void Swap(xe::ui::UIEvent* e) override;
 
  private:
-  ui::vk::VulkanContext* display_context_ = nullptr;
+  std::weak_ptr<ui::vk::VulkanContext> display_context_;
 };
 
 }  // namespace vk

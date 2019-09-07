@@ -103,8 +103,11 @@ bool DebugWindow::Initialize() {
   window_->Resize(1500, 1000);
 
   // Create the graphics context used for drawing.
-  auto provider = emulator_->display_window()->context()->provider();
-  window_->set_context(provider->CreateContext(window_.get()));
+  auto context = emulator_->display_window()->context().lock();
+  if (context) {
+    auto provider = context->provider();
+    window_->set_context(provider->CreateContext(window_.get()));
+  }
 
   // Enable imgui input.
   window_->set_imgui_input_enabled(true);
@@ -118,7 +121,7 @@ bool DebugWindow::Initialize() {
 }
 
 void DebugWindow::DrawFrame() {
-  xe::ui::GraphicsContextLock lock(window_->context());
+  xe::ui::GraphicsContextLock lock(window_->context().lock());
 
   auto& io = window_->imgui_drawer()->GetIO();
 

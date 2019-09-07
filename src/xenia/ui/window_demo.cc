@@ -76,7 +76,7 @@ int window_demo_main(const std::vector<std::wstring>& args) {
     window->set_context(graphics_provider->CreateContext(window.get()));
 
     // Setup the profiler display.
-    GraphicsContextLock context_lock(window->context());
+    GraphicsContextLock context_lock(window->context().lock());
     Profiler::set_window(window.get());
 
     // Enable imgui input.

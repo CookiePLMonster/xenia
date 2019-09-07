@@ -32,8 +32,8 @@ X_STATUS VulkanGraphicsSystem::Setup(cpu::Processor* processor,
   }
 
   if (target_window) {
-    display_context_ =
-        reinterpret_cast<xe::ui::vk::VulkanContext*>(target_window->context());
+    display_context_ = std::static_pointer_cast<xe::ui::vk::VulkanContext>(
+        target_window->context().lock());
   }
 
   return X_STATUS_SUCCESS;

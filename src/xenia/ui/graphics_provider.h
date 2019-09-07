@@ -29,7 +29,7 @@ class GraphicsProvider {
   Window* main_window() const { return main_window_; }
 
   // Creates a new graphics context and swapchain for presenting to a window.
-  virtual std::unique_ptr<GraphicsContext> CreateContext(
+  virtual std::shared_ptr<GraphicsContext> CreateContext(
       Window* target_window) = 0;
 
   // Creates a new offscreen graphics context without a swapchain or immediate

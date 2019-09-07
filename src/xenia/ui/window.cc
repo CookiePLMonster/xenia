@@ -182,7 +182,7 @@ void Window::OnPaint(UIEvent* e) {
     fps_frame_count_ = 0;
   }
 
-  GraphicsContextLock context_lock(context_.get());
+  GraphicsContextLock context_lock(context_);
 
   // Prepare ImGui for use this frame.
   auto& io = imgui_drawer_->GetIO();

@@ -218,7 +218,7 @@ X_STATUS Emulator::Setup(
   if (display_window_) {
     // Finish initializing the display.
     display_window_->loop()->PostSynchronous([this]() {
-      xe::ui::GraphicsContextLock context_lock(display_window_->context());
+      xe::ui::GraphicsContextLock context_lock(display_window_->context().lock());
       Profiler::set_window(display_window_);
     });
   }
